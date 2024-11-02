@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+        /* Estilo do título */
+        h1 {
+            font-family:Arial, Helvetica, sans-serif;  
+            color: #2c3e50;                   
+            font-size: 2.5em; /*aumenta o título*/
+            text-align: center; /*centraliza o título*/
+            margin-top: 20px; /*espaço acima do título*/
+            margin-bottom: 20px; /*espaço abaixo do título*/
+            text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.2);  /*sombra*/
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #3498db; /*cor de fundo azul*/
+            color: white;
+            border-radius: 5px; /*bordas arredondadas*/
+            cursor: pointer;
+        }
+
+        #ordem{
+            font: 2.0em;
+            margin-top: 10px;
+            color: black;
+            text-align: center;
+        }
+
+        .crescente {
+            color: green !important;
+        }
+
+        .decrescente {
+            color: red !important;
+        }
+
+        #output{
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        
+        }
+        /*estilização da tabela*/
+        table {
+            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: black;
+            border-collapse: collapse; /*bordas se fundem*/
+            width: 60%; /*largura da tabela*/
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: center;
+        }
+
+        th {
+            background-color:#3498db;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <h1>Funções - Tabuada</h1>
+
+    <div class="button-container">
+        <button onclick="mostrarTabuada()">Mostrar Tabuada</button>
+        <button onclick="limparTabuada()">Limpar Tabuada</button>
+        <button onclick="inverter()">Inverter</button>
+    </div>
+
+    <div id="ordem"></div>
+    <div id="operacoes" class="button-container" style="display: none;">
+        <select id="operacoesSelect" onchange="mostrarOperacao()">
+            <option value="">Selecione uma operação</option>
+            <option value="soma">Soma</option>
+            <option value="subtracao">Subtração</option>
+            <option value="multiplicacao">Multiplicação</option>
+            <option value="divisao">Divisão</option>
+        </select>
+    </div>
+    <div id="output"></div>
+
+    <script>
+
+        const output = document.getElementById("output")
+        const ordem = document.getElementById("ordem")
+        const operacoesContainer = document.getElementById("operacoes")
+        const operacoesSelect = document.getElementById("operacoesSelect")
+        let numAtual = null;
+        let ordemInversa = false;
+
+        function soma(a, b){
+            return a + b
+        }
+
+        function subtracao(a, b){
+            return a - b
+        }
+
+        function multiplicacao(a, b){
+            return a * b
+        }
+
+        function divisao (a, b){
+            return a / b
+        }
+
+        function mostrarTabuada(){
+
+            //pedir para o usuário digitar um número
+            let n = prompt("Digite um número")
+
+            if (n === null || n.trim() === "" || isNaN(n)){
+                alert("Valor inválido!")
+                return
+            }
+
+            numAtual = parseFloat(n)
+
+            //cria uma tabela
+            //table border é a borda da tabela(1 é mais fininha e assim por diante)
+            //<tr> (table row - linha da tabela)
+            //<th> (table header - cabeçalho da tabela - títulos)
+            //<td> (table data - dados da tabela - valores)
+            //as barras indicam onde o conteúdo termina
+
+            //mostra o seletor das operações
+            operacoesContainer.style.display = 'flex'
+        }
+
+        function mostrarOperacao(){
+            const operacao = operacoesSelect.value 
+            if (!operacao) {
+                output.innerHTML = ""
+                ordem.innerHTML = ""
+                return
+            }
+
+            switch(operacao){
+                case "soma":
+                    mostrarSoma()
+                    break;
+                case "subtracao":
+                    mostrarSubtracao()
+                    break;
+                case "multiplicacao":
+                    mostrarMultiplicacao()
+                    break;
+                case "divisao":
+                    mostrarDivisao()
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function mostrarSoma(){
+            let table = montarTabuada(numAtual, soma)
+
+            if (!ordemInversa){
+                ordem.className = "crescente"
+                ordem.innerHTML = "Ordem Crescente<br>Tabuada da Adição"
+            } else {
+                ordem.className = "decrescente"
+                ordem.innerHTML = "Ordem Decrescente<br>Tabuada da Adição"
+            }
+            
+            output.innerHTML = table
+        }
+
+        function mostrarSubtracao(){
+            let table = montarTabuada(numAtual, subtracao)
+
+            if (!ordemInversa){
+                ordem.className = "crescente"
+                ordem.innerHTML = "Ordem Crescente<br>Tabuada da Subtração"
+            } else {
+                ordem.className = "decrescente"
+                ordem.innerHTML = "Ordem Decrescente<br>Tabuada da Subtração"
+            }
+            
+            output.innerHTML = table
+        }
+
+        function mostrarMultiplicacao(){
+            let table = montarTabuada(numAtual, multiplicacao)
+
+            if (!ordemInversa){
+                ordem.className = "crescente"
+                ordem.innerHTML = "Ordem Crescente<br>Tabuada da Multiplicação"
+            } else {
+                ordem.className = "decrescente"
+                ordem.innerHTML = "Ordem Decrescente<br>Tabuada da Multiplicação"
+            }
+
+            output.innerHTML = table
+        }
+
+        function mostrarDivisao(){
+            let table = montarTabuada(numAtual, divisao)
+
+            if (!ordemInversa){
+                ordem.className = "crescente"
+                ordem.innerHTML = "Ordem Crescente<br>Tabuada da Divisão"
+            } else {
+                ordem.className = "decrescente"
+                ordem.innerHTML = "Ordem Decrescente<br>Tabuada da Divisão"
+            }
+            
+            output.innerHTML = table
+        }
+
+        function montarTabuada(numAtual, operacao){
+            let table = "<table><tr><th>Operação</th><th>Resultado</th></tr>"
+
+            if (!ordemInversa){
+                for (let i = 0; i <= 100; i++){
+                    if (operacao === soma){
+                        table += `<tr><td>${numAtual} + ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === subtracao){
+                        table += `<tr><td>${numAtual} - ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === multiplicacao){
+                        table += `<tr><td>${numAtual} * ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === divisao){
+                        table += `<tr><td>${numAtual} / ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    }
+                }
+            } else {
+                for (let i = 100; i >= 0; i--){
+                    if (operacao === soma){
+                        table += `<tr><td>${numAtual} + ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === subtracao){
+                        table += `<tr><td>${numAtual} - ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === multiplicacao){
+                        table += `<tr><td>${numAtual} * ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    } else if (operacao === divisao){
+                        table += `<tr><td>${numAtual} / ${i}</td><td>${operacao(numAtual, i)}</td></tr>`
+                    }
+                }
+            }
+
+            table += "</table>"
+            return table
+        }
+
+        function limparTabuada(){
+
+            output.innerHTML = ""
+            ordem.innerHTML = ""
+            numAtual = null
+        }
+
+        function inverter(){
+
+           if (numAtual === null){
+                alert("Escolha um valor primeiro")
+                return
+            }
+
+            ordemInversa = !ordemInversa
+            mostrarOperacao()
+        }
+
+    </script>
+
+</body>
+</html>
